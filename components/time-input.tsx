@@ -3,7 +3,13 @@
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { type TimeToken, parseTimeToken, formatTimeToken } from "@/lib/time-parser";
+import {
+  type TimeToken,
+  parseTimeToken,
+  parseTimeRange,
+  extractTimeTokens,
+  formatTimeToken,
+} from "@/lib/time-parser";
 import { AlertCircle } from "lucide-react";
 
 interface TimeInputProps {
@@ -45,31 +51,36 @@ export function TimeInput({
     onClearError();
 
     let inputToProcess = input.trim();
-    let isCurrentTime = false;
 
     // If input is empty, use current time
     if (!inputToProcess) {
       const now = new Date();
       inputToProcess = `${now.getHours().toString().padStart(2, "0")}${now.getMinutes().toString().padStart(2, "0")}`;
-      isCurrentTime = true;
     }
 
-    // Parse single time token only
-    const token = parseTimeToken(inputToProcess);
+    const parsedTokens: TimeToken[] = [];
 
-    if (!token) {
+    const rangeResult = parseTimeRange(inputToProcess);
+    if (rangeResult !== null) {
+      parsedTokens.push(rangeResult[0], rangeResult[1]);
+    } else {
+      const tokens = extractTimeTokens(inputToProcess);
+      for (const tokenStr of tokens) {
+        const token = parseTimeToken(tokenStr);
+        if (!token) {
+          onError("Invalid time format");
+          return;
+        }
+        parsedTokens.push(token);
+      }
+    }
+
+    if (parsedTokens.length === 0) {
       onError("Invalid time format");
       return;
     }
 
-    // If there's a pending token, the next input MUST start with a token
-    if (pendingToken) {
-      // Both are tokens, so we can proceed with pairing
-      onSubmit([token], inputToProcess);
-    } else {
-      // No pending token, this becomes the pending token
-      onSubmit([token], inputToProcess);
-    }
+    onSubmit(parsedTokens, inputToProcess);
     setInput("");
   };
 
@@ -80,13 +91,13 @@ export function TimeInput({
           <Input
             id="time-input"
             type="text"
+            autoFocus
             placeholder={currentTimeDisplay}
             value={input}
             onChange={(e) => {
               setInput(e.target.value);
               onClearError();
             }}
-            className="flex-1"
           />
           <Button type="submit" className="cursor-pointer px-6">
             Submit

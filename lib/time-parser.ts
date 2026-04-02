@@ -193,7 +193,7 @@ export function formatDurationWithDecimal(totalMinutes: number): string {
   const minutes = totalMinutes % 60;
   const decimalHours = (totalMinutes / 60).toFixed(2);
 
-  return `${hours} Hour ${minutes} Minutes (${decimalHours} Hours)`;
+  return `${hours} Hours ${minutes} Minutes (${decimalHours} Hours)`;
 }
 
 /**

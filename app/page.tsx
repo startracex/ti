@@ -1,4 +1,4 @@
-import { WorkHourCalculator } from "@/components/work-hour-calculator";
+import { HourCalculator } from "@/components/hour-calculator";
 import { getFormatBNF } from "@/lib/time-parser";
 import { Card } from "@/components/ui/card";
 
@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto space-y-8">
-        <WorkHourCalculator />
+        <HourCalculator />
 
         <Card className="p-6 bg-muted/50 border-muted">
           Valid input in Backus-Naur Form grammar

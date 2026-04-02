@@ -16,7 +16,7 @@ import { TimeRangesList } from "./time-ranges-list";
 import { TotalHoursDisplay } from "./total-hours-display";
 import { Button } from "@/components/ui/button";
 
-export function WorkHourCalculator() {
+export function HourCalculator() {
   const [state, setState] = useState<CalculatorState>(initialState);
   const [error, setError] = useState<string | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
